@@ -1,0 +1,55 @@
+<div class="register-container">
+
+    <div class="register-card">
+
+        <h1>Create Account</h1>
+
+        <p>Join CodeVerse 🚀</p>
+
+        <input
+            type="text"
+            placeholder="Full Name"
+            [(ngModel)]="name">
+
+        <input
+            type="email"
+            placeholder="Email"
+            [(ngModel)]="email">
+
+        <input
+            [type]="showPassword ? 'text':'password'"
+            placeholder="Password"
+            [(ngModel)]="password">
+
+        <input
+            [type]="showPassword ? 'text':'password'"
+            placeholder="Confirm Password"
+            [(ngModel)]="confirmPassword">
+
+        <button
+            type="button"
+            (click)="showPassword=!showPassword">
+
+            {{showPassword ? 'Hide Password' : 'Show Password'}}
+
+        </button>
+
+        <button
+            class="register-btn"
+            (click)="register()">
+
+            Register
+
+        </button>
+
+        <p>
+
+            Already have an account?
+
+            <a routerLink="/">Login</a>
+
+        </p>
+
+    </div>
+
+</div>

@@ -1,0 +1,65 @@
+<h1>Practice Problems</h1>
+
+<div class="search-section">
+
+  <input
+    type="text"
+    placeholder="🔍 Search Question..."
+    [(ngModel)]="searchText"
+    (input)="filterQuestions()"
+  />
+
+  <select
+    [(ngModel)]="selectedDifficulty"
+    (change)="filterQuestions()"
+  >
+    <option value="">All Difficulties</option>
+    <option value="Easy">Easy</option>
+    <option value="Medium">Medium</option>
+    <option value="Hard">Hard</option>
+  </select>
+
+</div>
+
+<div class="question-list">
+
+  <div
+    class="question-card"
+    *ngFor="let question of filteredQuestions; let i = index"
+  >
+
+    <div class="question-header">
+
+      <h2>{{ question.title }}</h2>
+
+      <span
+        class="difficulty"
+        [ngClass]="question.difficulty.toLowerCase()"
+      >
+        {{ question.difficulty }}
+      </span>
+
+    </div>
+
+    <p class="description">
+      {{ question.description }}
+    </p>
+
+    <div class="question-footer">
+
+      <span class="language">
+        💻 {{ question.language }}
+      </span>
+
+      <button
+        type="button"
+        (click)="solveQuestion(i)"
+      >
+        Solve →
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

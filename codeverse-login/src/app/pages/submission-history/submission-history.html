@@ -1,0 +1,48 @@
+<h1>Submission History</h1>
+
+<p *ngIf="loading">
+  Loading submissions...
+</p>
+
+<p *ngIf="!loading && submissions.length === 0">
+  No submissions found.
+</p>
+
+<div *ngFor="let submission of submissions">
+
+  <hr>
+
+  <h2>{{ submission.questionId.title }}</h2>
+
+  <p>
+    <b>Language:</b> {{ submission.language }}
+  </p>
+
+  <p>
+    <b>Status:</b>
+
+    <span *ngIf="submission.status === 'Accepted'">
+      ✅ Accepted
+    </span>
+
+    <span *ngIf="submission.status !== 'Accepted'">
+      ❌ Failed
+    </span>
+
+  </p>
+
+  <p>
+    <b>Tests:</b>
+    {{ submission.passedTests }}/{{ submission.totalTests }}
+  </p>
+
+  <p>
+    <b>Submitted:</b>
+    {{ submission.createdAt | date:'medium' }}
+  </p>
+
+  <h3>Submitted Code</h3>
+
+  <pre>{{ submission.code }}</pre>
+
+</div>

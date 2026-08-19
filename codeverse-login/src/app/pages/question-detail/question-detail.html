@@ -1,0 +1,201 @@
+<div class="question-page">
+
+  <!-- Question Header -->
+  <div class="question-card">
+
+    <div class="question-top">
+
+      <div>
+        <h1>{{ title() }}</h1>
+
+        <p class="description">
+          {{ description() }}
+        </p>
+      </div>
+
+      <span
+        class="difficulty"
+        [ngClass]="difficulty().toLowerCase()"
+      >
+        {{ difficulty() }}
+      </span>
+
+    </div>
+
+    <div class="language">
+      💻 Language: <b>{{ language() }}</b>
+    </div>
+
+  </div>
+
+
+  <!-- Starter Code -->
+  <div class="editor-card">
+
+    <h2>Starter Code</h2>
+
+    <pre class="code-box">{{ starterCode() }}</pre>
+
+  </div>
+
+
+  <!-- Code Editor -->
+  <div class="editor-card">
+
+    <h2>Your Code</h2>
+
+    <textarea
+      [(ngModel)]="code"
+      rows="14"
+      placeholder="Write your solution here..."
+    ></textarea>
+
+    <div class="buttons">
+
+      <button
+        class="run-btn"
+        type="button"
+        (click)="runCode()"
+      >
+        ▶ Run Code
+      </button>
+
+      <button
+        class="submit-btn"
+        type="button"
+        (click)="submitCode()"
+        [disabled]="!allPassed"
+      >
+        ✓ Submit Code
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Success Message -->
+  <div
+    class="success-message"
+    *ngIf="allPassed"
+  >
+    🎉 All test cases passed! You can submit your solution.
+  </div>
+
+
+  <!-- Output -->
+  <div class="editor-card">
+
+    <h2>Output</h2>
+
+    <pre class="output-box">{{ output }}</pre>
+
+  </div>
+
+
+  <!-- Test Results -->
+  <div
+    class="editor-card"
+    *ngIf="testResults.length > 0"
+  >
+
+    <h2>Test Results</h2>
+
+    <div
+      class="test-result"
+      *ngFor="let result of testResults"
+    >
+
+      <div class="test-header">
+
+        <h3>
+          Test Case {{ result.testNumber }}
+        </h3>
+
+        <span
+          *ngIf="result.passed"
+          class="passed"
+        >
+          ✅ Passed
+        </span>
+
+        <span
+          *ngIf="!result.passed"
+          class="failed"
+        >
+          ❌ Failed
+        </span>
+
+      </div>
+
+      <p>
+        <b>Input:</b>
+        {{ result.input }}
+      </p>
+
+      <p>
+        <b>Expected:</b>
+        {{ result.expected }}
+      </p>
+
+      <p>
+        <b>Your Output:</b>
+        {{ result.actual }}
+      </p>
+<!-- Test Results -->
+<div
+  class="editor-card"
+  *ngIf="testResults.length > 0"
+>
+
+  <h2>🧪 Test Results</h2>
+
+  <div
+    class="test-result"
+    *ngFor="let result of testResults"
+    [ngClass]="result.passed ? 'test-passed' : 'test-failed'"
+  >
+
+    <div class="test-header">
+
+      <h3>
+        Test Case {{ result.testNumber }}
+      </h3>
+
+      <span *ngIf="result.passed" class="passed">
+        ✅ Passed
+      </span>
+
+      <span *ngIf="!result.passed" class="failed">
+        ❌ Failed
+      </span>
+
+    </div>
+
+    <div class="test-info">
+
+      <div>
+        <b>Input</b>
+        <pre>{{ result.input }}</pre>
+      </div>
+
+      <div>
+        <b>Expected Output</b>
+        <pre>{{ result.expected }}</pre>
+      </div>
+
+      <div>
+        <b>Your Output</b>
+        <pre>{{ result.actual }}</pre>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+    </div>
+
+  </div>
+
+</div>

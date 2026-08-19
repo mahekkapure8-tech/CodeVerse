@@ -1,0 +1,80 @@
+.category-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+.category-buttons button{
+    padding: 10px 18px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: #e5e7eb;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.category-buttons button:hover{
+    background-color: rgb(175, 36, 112);
+    color: white;
+}
+.bookmark-section{
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.bookmark-page-btn{
+    background: #2563eb;
+    color:red;
+    border:none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size:16px;
+    font-weight: bold;
+    transition:0.30s;
+}
+.bookmark-page-btn:hover{
+    background: #1d4ed8;
+}
+.stats-container{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin:40px 0;
+    flex-wrap:wrap;
+}
+
+.stat-card{
+    width:180px;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.12);
+    transition:.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-card h2{
+    color:#2563eb;
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.stat-card p{
+    color:#555;
+    font-weight:bold;
+}
+.dark .hero{
+    background:#111827;
+    color:white;
+}
+
+.dark .home{
+    background:#111827;
+    color:white;
+}

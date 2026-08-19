@@ -1,0 +1,56 @@
+<div class="login-container">
+
+    <div class="login-card">
+
+        <h1>CodeVerse</h1>
+
+        <p class="subtitle">
+            Welcome Back 👋
+        </p>
+
+        <input
+            type="email"
+            placeholder="Enter Email"
+            [(ngModel)]="email">
+
+        <div class="password-box">
+
+            <input
+                [type]="showPassword ? 'text' : 'password'"
+                placeholder="Enter Password"
+                [(ngModel)]="password">
+
+            <button
+                type="button"
+                class="eye-btn"
+                (click)="showPassword=!showPassword">
+
+                {{showPassword ? '🙈' : '👁'}}
+
+            </button>
+
+        </div>
+
+        <button
+            class="login-btn"
+            (click)="login()">
+
+            Login
+
+        </button>
+
+        <p class="bottom-text">
+
+            Don't have an account?
+
+            <a routerLink="/register">
+
+                Register
+
+            </a>
+
+        </p>
+
+    </div>
+
+</div>

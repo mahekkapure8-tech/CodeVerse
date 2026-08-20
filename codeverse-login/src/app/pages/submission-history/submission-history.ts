@@ -33,7 +33,7 @@ const headers = new HttpHeaders({
 
     this.http
   .get<any>(
-'https://consultation-richards-produce-educators.trycloudflare.com/api/submissions/history',
+'https://codeverse-backend-9nx6.onrender.com/api/submissions/history',
     { headers }
   
       )

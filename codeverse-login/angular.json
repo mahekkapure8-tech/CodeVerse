@@ -53,13 +53,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-         "builder": "@angular/build:dev-server",
-  "options": {
-    "allowedHosts": [
-      "capital-african-households-insight.trycloudflare.com"
-    ]
-  }, 
-         
+  "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "codeverse-login:build:production"

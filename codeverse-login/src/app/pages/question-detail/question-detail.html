@@ -2,7 +2,9 @@
 
   <!-- Question Header -->
   <div class="question-card">
+
     <div class="question-top">
+
       <div>
         <h1>{{ title() }}</h1>
 
@@ -17,21 +19,29 @@
       >
         {{ difficulty() }}
       </span>
+
     </div>
 
     <div class="language">
       💻 Language: <b>{{ language() }}</b>
     </div>
+
   </div>
+
 
   <!-- Starter Code -->
   <div class="editor-card">
+
     <h2>Starter Code</h2>
+
     <pre class="code-box">{{ starterCode() }}</pre>
+
   </div>
 
-  <!-- Code Editor -->
+
+  <!-- Your Code -->
   <div class="editor-card">
+
     <h2>Your Code</h2>
 
     <textarea
@@ -60,9 +70,11 @@
       </button>
 
     </div>
+
   </div>
 
-  <!-- Success -->
+
+  <!-- Success Message -->
   <div
     class="success-message"
     *ngIf="allPassed"
@@ -70,11 +82,98 @@
     🎉 All test cases passed! You can submit your solution.
   </div>
 
-  <!-- Output - ONLY ONCE -->
+
+  <!-- Output -->
   <div class="editor-card">
+
     <h2>Output</h2>
 
     <pre class="output-box">{{ output }}</pre>
+
   </div>
 
-  
+
+  <!-- TEST RESULTS -->
+  <div
+    class="editor-card"
+    *ngIf="testResults.length > 0"
+  >
+
+    <h2>🧪 Test Results</h2>
+
+
+    <!-- Each Test Case -->
+    <div
+      *ngFor="let result of testResults"
+      class="test-result"
+      [ngClass]="{
+        'test-passed': result.passed,
+        'test-failed': !result.passed
+      }"
+    >
+
+      <!-- Test Header -->
+      <div class="test-header">
+
+        <h3>
+          Test Case {{ result.testNumber }}
+        </h3>
+
+        <span
+          *ngIf="result.passed"
+          class="passed"
+        >
+          ✅ Passed
+        </span>
+
+        <span
+          *ngIf="!result.passed"
+          class="failed"
+        >
+          ❌ Failed
+        </span>
+
+      </div>
+
+
+      <!-- Test Information -->
+      <div class="test-info">
+
+
+        <!-- Input -->
+        <div class="test-box">
+
+          <b>Input</b>
+
+          <pre>{{ result.input }}</pre>
+
+        </div>
+
+
+        <!-- Expected -->
+        <div class="test-box">
+
+          <b>Expected Output</b>
+
+          <pre>{{ result.expected }}</pre>
+
+        </div>
+
+
+        <!-- Actual -->
+        <div class="test-box">
+
+          <b>Your Output</b>
+
+          <pre>{{ result.actual }}</pre>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

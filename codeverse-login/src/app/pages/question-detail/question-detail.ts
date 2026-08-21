@@ -38,8 +38,6 @@ export class QuestionDetail implements OnInit {
     this.questionId =
       this.route.snapshot.paramMap.get('id') || '';
 
-    console.log('QUESTION ID:', this.questionId);
-
     if (!this.questionId) {
       return;
     }
@@ -78,257 +76,165 @@ export class QuestionDetail implements OnInit {
   }
 
 
-  // ==============================
+  // =========================
   // RUN CODE
-  // ==============================
+  // =========================
 
   runCode(): void {
 
-    console.log(
-      'RUN CODE CLICKED:',
-      new Date().toISOString()
-    );
+  this.output = 'Running...';
+  this.testResults = [];
+  this.allPassed = false;
 
-    this.output = 'Running...';
+  const tests = this.question?.testCases || [];
 
-    this.testResults = [];
-    this.allPassed = false;
-
-    const tests =
-      this.question?.testCases || [];
-
-    if (tests.length === 0) {
-
-      this.output = 'No test cases found';
-
-      return;
-    }
-
-    let completedTests = 0;
-    let passedTests = 0;
-
-    tests.forEach(
-      (test: any, index: number) => {
-
-        this.questionService
-          .runCode(
-            this.code,
-            test.input
-          )
-          .subscribe({
-
-            next: (res: any) => {
-
-              console.log(
-                'TEST RESPONSE:',
-                res
-              );
-
-              const actual = String(
-                res.output ?? ''
-              )
-                .trim()
-                .replace(/^["']|["']$/g, '');
-
-              const expected = String(
-                test.output ?? ''
-              )
-                .trim()
-                .replace(/^["']|["']$/g, '');
-
-              const passed =
-                actual === expected;
-
-              if (passed) {
-                passedTests++;
-              }
-
-              this.testResults.push({
-
-                testNumber: index + 1,
-
-                input: test.input,
-
-                expected: expected,
-
-                actual: actual,
-
-                passed: passed
-
-              });
-
-              completedTests++;
-
-              if (
-                completedTests ===
-                tests.length
-              ) {
-
-                this.allPassed =
-                  passedTests === tests.length;
-
-                this.output =
-                  `${passedTests}/${tests.length} test cases passed`;
-
-              }
-
-            },
-
-            error: (err: any) => {
-
-              console.error(
-                `TEST ${index + 1} ERROR:`,
-                err
-              );
-
-              this.testResults.push({
-
-                testNumber: index + 1,
-
-                input: test.input,
-
-                expected: test.output,
-
-                actual: 'Execution Error',
-
-                passed: false
-
-              });
-
-              completedTests++;
-
-              if (
-                completedTests ===
-                tests.length
-              ) {
-
-                this.allPassed = false;
-
-                this.output =
-                  `${passedTests}/${tests.length} test cases passed`;
-
-              }
-
-            }
-
-          });
-
-      }
-
-    );
-
+  if (tests.length === 0) {
+    this.output = 'No test cases found';
+    return;
   }
 
+  let passedTests = 0;
+  let completedTests = 0;
 
-  // ==============================
-  // SUBMIT CODE
-  // ==============================
+  const results: any[] = new Array(tests.length);
 
-  submitCode(): void {
+  tests.forEach((test: any, index: number) => {
 
-    if (!this.allPassed) {
+    this.questionService
+      .runCode(this.code, test.input)
+      .subscribe({
 
-      this.output =
-        '❌ Please pass all test cases first.';
+        next: (res: any) => {
 
-      return;
-    }
+          const actual = String(res.output ?? '')
+            .trim()
+            .replace(/^["']|["']$/g, '');
 
-    const token =
-      localStorage.getItem('token');
+          const expected = String(test.output ?? '')
+            .trim()
+            .replace(/^["']|["']$/g, '');
 
-    if (!token) {
+          const passed = actual === expected;
 
-      this.output =
-        '❌ Please login first.';
-
-      return;
-    }
-
-    try {
-
-      const payload =
-        JSON.parse(
-          atob(token.split('.')[1])
-        );
-
-      const data = {
-
-        questionId:
-          this.questionId,
-
-        userId:
-          payload.id,
-
-        code:
-          this.code,
-
-        language:
-          this.language(),
-
-        status:
-          'Accepted',
-
-        passedTests:
-          this.testResults.filter(
-            (test: any) =>
-              test.passed
-          ).length,
-
-        totalTests:
-          this.testResults.length
-
-      };
-
-      console.log(
-        'SUBMISSION DATA:',
-        data
-      );
-
-      this.questionService
-        .submitCode(data)
-        .subscribe({
-
-          next: (res: any) => {
-
-            console.log(
-              'SUBMISSION RESPONSE:',
-              res
-            );
-
-            this.output =
-              '🎉 Solution Submitted Successfully!';
-
-          },
-
-          error: (err: any) => {
-
-            console.error(
-              'SUBMISSION ERROR:',
-              err
-            );
-
-            this.output =
-              err.error?.error ||
-              err.error?.message ||
-              '❌ Submission failed';
-
+          if (passed) {
+            passedTests++;
           }
 
-        });
+          results[index] = {
+            testNumber: index + 1,
+            input: test.input,
+            expected: expected,
+            actual: actual,
+            passed: passed
+          };
 
-    } catch (error) {
+          completedTests++;
 
-      console.error(
-        'TOKEN ERROR:',
-        error
-      );
+          if (completedTests === tests.length) {
+
+            this.testResults = [...results];
+
+            this.allPassed =
+              passedTests === tests.length;
+
+            this.output =
+              `${passedTests}/${tests.length} test cases passed`;
+
+            console.log(
+              'FINAL TEST RESULTS:',
+              this.testResults
+            );
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(
+            'TEST ERROR:',
+            err
+          );
+
+          results[index] = {
+            testNumber: index + 1,
+            input: test.input,
+            expected: test.output,
+            actual: 'Execution Error',
+            passed: false
+          };
+
+          completedTests++;
+
+          if (completedTests === tests.length) {
+
+            this.testResults = [...results];
+
+            this.allPassed = false;
+
+            this.output =
+              `${passedTests}/${tests.length} test cases passed`;
+
+            console.log(
+              'FINAL TEST RESULTS:',
+              this.testResults
+            );
+          }
+
+        }
+
+      });
+
+  });
+
+}
+submitCode(): void {
+
+  if (!this.allPassed) {
+    this.output = '❌ Please pass all test cases first.';
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    this.output = '❌ Please login first.';
+    return;
+  }
+
+  const data = {
+    questionId: this.questionId,
+    code: this.code,
+    language: this.language(),
+    status: 'Accepted',
+    passedTests: this.testResults.filter(
+      (test: any) => test.passed
+    ).length,
+    totalTests: this.testResults.length
+  };
+
+  console.log('SUBMISSION DATA:', data);
+
+  this.questionService.submitCode(data).subscribe({
+
+    next: (res: any) => {
+
+      console.log('SUBMISSION RESPONSE:', res);
+
+      this.output = '🎉 Solution Submitted Successfully!';
+
+    },
+
+    error: (err: any) => {
+
+      console.error('SUBMISSION ERROR:', err);
 
       this.output =
-        '❌ Invalid login token. Please login again.';
+        err.error?.error ||
+        err.error?.message ||
+        '❌ Submission failed';
 
     }
 
-  }
-
+  });
+}
 }

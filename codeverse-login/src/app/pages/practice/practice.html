@@ -21,7 +21,17 @@
 
 </div>
 
-<div class="question-list">
+<p>
+  Questions loaded: {{ filteredQuestions.length }}
+</p>
+
+<!-- NO QUESTIONS -->
+<div *ngIf="filteredQuestions.length === 0">
+  <h2>No questions found</h2>
+</div>
+
+<!-- QUESTIONS -->
+<div class="question-list" *ngIf="filteredQuestions.length > 0">
 
   <div
     class="question-card"
@@ -30,11 +40,13 @@
 
     <div class="question-header">
 
-      <h2>{{ question.title }}</h2>
+      <h2>
+        {{ question.title }}
+      </h2>
 
       <span
         class="difficulty"
-        [ngClass]="question.difficulty.toLowerCase()"
+        [ngClass]="question.difficulty?.toLowerCase()"
       >
         {{ question.difficulty }}
       </span>

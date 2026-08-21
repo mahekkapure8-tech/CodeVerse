@@ -1,42 +1,31 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { QuestionService } from '../../services/question.service';
 import { Router } from '@angular/router';
+import { QuestionService } from '../../services/question.service';
+
 @Component({
   selector: 'app-practice',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './practice.html',
   styleUrl: './practice.css'
 })
 export class Practice implements OnInit {
 
   questions: any[] = [];
-  searchText = '';
-  selectedDifficulty = '';
-
   allQuestions: any[] = [];
   filteredQuestions: any[] = [];
 
+  searchText = '';
+  selectedDifficulty = '';
+
   constructor(
     private questionService: QuestionService,
-    private cdr: ChangeDetectorRef,
     private router: Router
   ) {}
 
-  solveQuestion(index:number): void {
-    const question = this.filteredQuestions[index];
-     console.log('SELECTED QUESTION:', question);
-  console.log('QUESTION ID:', question._id);
-   alert('ID: ' + question._id);
-
-  this.router.navigate(['/question', question._id]);
-    
-  }
-
   ngOnInit(): void {
-    
 
     console.log('PRACTICE STARTED');
 
@@ -44,47 +33,80 @@ export class Practice implements OnInit {
 
       next: (res: any) => {
 
-        console.log('API LENGTH:', res.length);
+        console.log('API RESPONSE:', res);
 
-        this.allQuestions = [...res];
+        const data = Array.isArray(res)
+          ? res
+          : res.questions || [];
 
-this.filteredQuestions = [...res];
+        console.log('API LENGTH:', data.length);
 
-this.questions = [...res];
+        this.questions = data;
+        this.allQuestions = [...data];
+        this.filteredQuestions = [...data];
 
-console.log('FINAL LENGTH:', this.filteredQuestions.length);
+        console.log('FINAL QUESTIONS:', this.filteredQuestions);
+        console.log('FINAL LENGTH:', this.filteredQuestions.length);
 
-this.cdr.detectChanges();
       },
 
       error: (err: any) => {
+
         console.error('API ERROR:', err);
+
+        this.questions = [];
+        this.allQuestions = [];
+        this.filteredQuestions = [];
+
       }
 
     });
 
   }
+
   filterQuestions(): void {
 
-  const search = this.searchText.trim().toLowerCase();
+    const search = this.searchText
+      .trim()
+      .toLowerCase();
 
-  this.filteredQuestions = this.allQuestions.filter((question: any) => {
+    this.filteredQuestions = this.allQuestions.filter(
+      (question: any) => {
 
-    const matchesSearch =
-      !search ||
-      question.title?.toLowerCase().includes(search) ||
-      question.description?.toLowerCase().includes(search) ||
-      question.language?.toLowerCase().includes(search) ||
-      question.tags?.some((tag: string) =>
-        tag.toLowerCase().includes(search)
-      );
+        const matchesSearch =
+          !search ||
+          question.title?.toLowerCase().includes(search) ||
+          question.description?.toLowerCase().includes(search) ||
+          question.language?.toLowerCase().includes(search);
 
-    const matchesDifficulty =
-      this.selectedDifficulty === '' ||
-      question.difficulty === this.selectedDifficulty;
+        const matchesDifficulty =
+          !this.selectedDifficulty ||
+          question.difficulty === this.selectedDifficulty;
 
-    return matchesSearch && matchesDifficulty;
-  });
+        return matchesSearch && matchesDifficulty;
+      }
+    );
 
-}
+  }
+
+  solveQuestion(index: number): void {
+
+    const question = this.filteredQuestions[index];
+
+    console.log('SELECTED QUESTION:', question);
+
+    if (!question || !question._id) {
+
+      console.error('QUESTION ID NOT FOUND:', question);
+
+      return;
+    }
+
+    this.router.navigate([
+      '/question',
+      question._id
+    ]);
+
+  }
+
 }

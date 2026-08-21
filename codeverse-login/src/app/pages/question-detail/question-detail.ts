@@ -33,19 +33,12 @@ export class QuestionDetail implements OnInit {
     private questionService: QuestionService
   ) {}
 
-  // ==============================
-  // LOAD QUESTION
-  // ==============================
-
   ngOnInit(): void {
 
     this.questionId =
       this.route.snapshot.paramMap.get('id') || '';
 
-    console.log(
-      'QUESTION ID:',
-      this.questionId
-    );
+    console.log('QUESTION ID:', this.questionId);
 
     if (!this.questionId) {
       return;
@@ -57,36 +50,17 @@ export class QuestionDetail implements OnInit {
 
         next: (res: any) => {
 
-          console.log(
-            'QUESTION DETAILS:',
-            res
-          );
+          console.log('QUESTION DETAILS:', res);
 
           this.question = res;
 
-          this.title.set(
-            res.title || ''
-          );
+          this.title.set(res.title || '');
+          this.description.set(res.description || '');
+          this.difficulty.set(res.difficulty || '');
+          this.language.set(res.language || 'JavaScript');
+          this.starterCode.set(res.starterCode || '');
 
-          this.description.set(
-            res.description || ''
-          );
-
-          this.difficulty.set(
-            res.difficulty || ''
-          );
-
-          this.language.set(
-            res.language || ''
-          );
-
-          this.starterCode.set(
-            res.starterCode || ''
-          );
-
-          // Put starter code inside editor
-          this.code =
-            res.starterCode || '';
+          this.code = res.starterCode || '';
 
         },
 
@@ -110,10 +84,6 @@ export class QuestionDetail implements OnInit {
 
   runCode(): void {
 
-    console.time(
-      'TOTAL RUN TIME'
-    );
-
     console.log(
       'RUN CODE CLICKED:',
       new Date().toISOString()
@@ -122,7 +92,6 @@ export class QuestionDetail implements OnInit {
     this.output = 'Running...';
 
     this.testResults = [];
-
     this.allPassed = false;
 
     const tests =
@@ -130,28 +99,16 @@ export class QuestionDetail implements OnInit {
 
     if (tests.length === 0) {
 
-      this.output =
-        'No test cases found';
-
-      console.timeEnd(
-        'TOTAL RUN TIME'
-      );
+      this.output = 'No test cases found';
 
       return;
     }
 
     let completedTests = 0;
-
     let passedTests = 0;
-
 
     tests.forEach(
       (test: any, index: number) => {
-
-        console.time(
-          `TEST ${index + 1}`
-        );
-
 
         this.questionService
           .runCode(
@@ -160,75 +117,47 @@ export class QuestionDetail implements OnInit {
           )
           .subscribe({
 
-            // ==============================
-            // SUCCESS
-            // ==============================
-
             next: (res: any) => {
 
-              console.timeEnd(
-                `TEST ${index + 1}`
-              );
-
               console.log(
-                'OUTPUT RECEIVED:',
-                new Date().toISOString()
-              );
-
-              console.log(
-                'RESPONSE:',
+                'TEST RESPONSE:',
                 res
               );
 
-
               const actual = String(
-  res.output ?? ''
-).trim().replace(/^["']|["']$/g, '');
+                res.output ?? ''
+              )
+                .trim()
+                .replace(/^["']|["']$/g, '');
 
-const expected = String(
-  test.output ?? ''
-).trim().replace(/^["']|["']$/g, '');
+              const expected = String(
+                test.output ?? ''
+              )
+                .trim()
+                .replace(/^["']|["']$/g, '');
 
-
-console.log('ACTUAL OUTPUT:', JSON.stringify(actual));
-console.log('EXPECTED OUTPUT:', JSON.stringify(expected));
-console.log('MATCH:', actual === expected);
-const passed = actual === expected;
-
+              const passed =
+                actual === expected;
 
               if (passed) {
-
                 passedTests++;
-
               }
-
 
               this.testResults.push({
 
-                testNumber:
-                  index + 1,
+                testNumber: index + 1,
 
-                input:
-                  test.input,
+                input: test.input,
 
-                expected:
-                  expected,
+                expected: expected,
 
-                actual:
-                  actual,
+                actual: actual,
 
-                passed:
-                  passed
+                passed: passed
 
               });
 
-
               completedTests++;
-
-
-              // ==============================
-              // ALL TESTS COMPLETED
-              // ==============================
 
               if (
                 completedTests ===
@@ -236,85 +165,47 @@ const passed = actual === expected;
               ) {
 
                 this.allPassed =
-                  passedTests ===
-                  tests.length;
-
+                  passedTests === tests.length;
 
                 this.output =
                   `${passedTests}/${tests.length} test cases passed`;
-
-
-                console.log(
-                  'FINAL TEST RESULT:',
-                  this.testResults
-                );
-
-
-                console.timeEnd(
-                  'TOTAL RUN TIME'
-                );
 
               }
 
             },
 
-
-            // ==============================
-            // ERROR
-            // ==============================
-
             error: (err: any) => {
-
-              console.timeEnd(
-                `TEST ${index + 1}`
-              );
-
 
               console.error(
                 `TEST ${index + 1} ERROR:`,
                 err
               );
 
-
               this.testResults.push({
 
-                testNumber:
-                  index + 1,
+                testNumber: index + 1,
 
-                input:
-                  test.input,
+                input: test.input,
 
-                expected:
-                  test.output,
+                expected: test.output,
 
-                actual:
-                  'Execution Error',
+                actual: 'Execution Error',
 
-                passed:
-                  false
+                passed: false
 
               });
 
-
               completedTests++;
-
 
               if (
                 completedTests ===
                 tests.length
               ) {
 
-                this.allPassed =
-                  false;
-
+                this.allPassed = false;
 
                 this.output =
                   `${passedTests}/${tests.length} test cases passed`;
-
-
-                console.timeEnd(
-                  'TOTAL RUN TIME'
-                );
 
               }
 
@@ -343,71 +234,100 @@ const passed = actual === expected;
       return;
     }
 
-const token = localStorage.getItem('token');
+    const token =
+      localStorage.getItem('token');
 
-if (!token) {
-  this.output = '❌ Please login first.';
-  return;
-}
+    if (!token) {
 
-const payload = JSON.parse(atob(token.split('.')[1]));
+      this.output =
+        '❌ Please login first.';
 
-const data = {
-  questionId: this.questionId,
-  userId: payload.id,
-  code: this.code,
-  language: this.language(),
-  status: 'Accepted',
-  passedTests: this.testResults.filter(
-    (test: any) => test.passed
-  ).length,
-  totalTests: this.testResults.length
-};
+      return;
+    }
 
-console.log('SUBMISSION DATA:', data);
+    try {
 
+      const payload =
+        JSON.parse(
+          atob(token.split('.')[1])
+        );
 
-    this.questionService
-      .submitCode(data)
-      .subscribe({
+      const data = {
 
-        // ==============================
-        // SUBMISSION SUCCESS
-        // ==============================
+        questionId:
+          this.questionId,
 
-        next: (res: any) => {
+        userId:
+          payload.id,
 
-          console.log(
-            'SUBMISSION RESPONSE:',
-            res
-          );
+        code:
+          this.code,
 
+        language:
+          this.language(),
 
-          this.output =
-            '🎉 Solution Submitted Successfully!';
+        status:
+          'Accepted',
 
-        },
+        passedTests:
+          this.testResults.filter(
+            (test: any) =>
+              test.passed
+          ).length,
 
+        totalTests:
+          this.testResults.length
 
-        // ==============================
-        // SUBMISSION ERROR
-        // ==============================
+      };
 
-        error: (err: any) => {
+      console.log(
+        'SUBMISSION DATA:',
+        data
+      );
 
-          console.error(
-            'SUBMISSION ERROR:',
-            err
-          );
+      this.questionService
+        .submitCode(data)
+        .subscribe({
 
+          next: (res: any) => {
 
-          this.output =
-            err.error?.error ||
-            '❌ Submission failed';
+            console.log(
+              'SUBMISSION RESPONSE:',
+              res
+            );
 
-        }
+            this.output =
+              '🎉 Solution Submitted Successfully!';
 
-      });
+          },
+
+          error: (err: any) => {
+
+            console.error(
+              'SUBMISSION ERROR:',
+              err
+            );
+
+            this.output =
+              err.error?.error ||
+              err.error?.message ||
+              '❌ Submission failed';
+
+          }
+
+        });
+
+    } catch (error) {
+
+      console.error(
+        'TOKEN ERROR:',
+        error
+      );
+
+      this.output =
+        '❌ Invalid login token. Please login again.';
+
+    }
 
   }
 

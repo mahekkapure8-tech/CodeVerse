@@ -7,9 +7,11 @@ import { Observable } from 'rxjs';
 })
 export class QuestionService {
 
-  private apiUrl = 'http://localhost:5000/api/questions';
-  private executeUrl = 'http://localhost:5000/api/execute';
-  private submissionUrl = 'http://localhost:5000/api/submissions';
+  private apiUrl = 'https://codeverse-api-g7b5.onrender.com/api/questions';
+
+  private executeUrl = 'https://codeverse-api-g7b5.onrender.com/api/execute';
+
+  private submissionUrl = 'https://codeverse-api-g7b5.onrender.com/api/submissions';
 
   constructor(private http: HttpClient) {}
 
@@ -18,7 +20,9 @@ export class QuestionService {
   }
 
   getQuestionById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(
+      `${this.apiUrl}/${id}`
+    );
   }
 
   runCode(code: string, input: string) {

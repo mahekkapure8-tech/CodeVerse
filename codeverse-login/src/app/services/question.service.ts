@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -37,9 +37,29 @@ export class QuestionService {
   }
 
   submitCode(data: any) {
+
+    const token =
+      localStorage.getItem('token') ||
+      localStorage.getItem('accessToken') ||
+      localStorage.getItem('jwt');
+
+    console.log('TOKEN FOUND:', !!token);
+
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    if (token) {
+      headers = headers.set(
+        'Authorization',
+        `Bearer ${token}`
+      );
+    }
+
     return this.http.post<any>(
       `${this.submissionUrl}/add`,
-      data
+      data,
+      { headers }
     );
   }
 }

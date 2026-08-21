@@ -22,16 +22,10 @@
 </div>
 
 <p>
-  Questions loaded: {{ filteredQuestions.length }}
+  Questions loaded: {{ allQuestions.length }}
 </p>
 
-<!-- NO QUESTIONS -->
-<div *ngIf="filteredQuestions.length === 0">
-  <h2>No questions found</h2>
-</div>
-
-<!-- QUESTIONS -->
-<div class="question-list" *ngIf="filteredQuestions.length > 0">
+<div class="question-list">
 
   <div
     class="question-card"
@@ -40,9 +34,7 @@
 
     <div class="question-header">
 
-      <h2>
-        {{ question.title }}
-      </h2>
+      <h2>{{ question.title }}</h2>
 
       <span
         class="difficulty"
@@ -60,7 +52,7 @@
     <div class="question-footer">
 
       <span class="language">
-        💻 {{ question.language }}
+        💻 {{ question.language || 'JavaScript' }}
       </span>
 
       <button
@@ -74,4 +66,16 @@
 
   </div>
 
+</div>
+
+<div
+  *ngIf="filteredQuestions.length === 0 && allQuestions.length > 0"
+>
+  <h2>No questions match your search/filter.</h2>
+</div>
+
+<div
+  *ngIf="allQuestions.length === 0"
+>
+  <h2>No questions found</h2>
 </div>

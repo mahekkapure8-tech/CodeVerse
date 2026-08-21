@@ -7,11 +7,14 @@ import { Observable } from 'rxjs';
 })
 export class QuestionService {
 
-  private apiUrl = 'https://codeverse-api-g7b5.onrender.com/api/questions';
+  private apiUrl =
+    'https://codeverse-api-g7b5.onrender.com/api/questions';
 
-  private executeUrl = 'https://codeverse-api-g7b5.onrender.com/api/execute';
+  private executeUrl =
+    'https://codeverse-api-g7b5.onrender.com/api/execute';
 
-  private submissionUrl = 'https://codeverse-api-g7b5.onrender.com/api/submissions';
+  private submissionUrl =
+    'https://codeverse-api-g7b5.onrender.com/api/submissions';
 
   constructor(private http: HttpClient) {}
 
@@ -38,23 +41,18 @@ export class QuestionService {
 
   submitCode(data: any) {
 
-    const token =
-      localStorage.getItem('token') ||
-      localStorage.getItem('accessToken') ||
-      localStorage.getItem('jwt');
+    const token = localStorage.getItem('token');
 
-    console.log('TOKEN FOUND:', !!token);
+    console.log('SUBMISSION TOKEN:', token);
 
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    if (token) {
-      headers = headers.set(
-        'Authorization',
-        `Bearer ${token}`
-      );
+    if (!token) {
+      console.error('TOKEN NOT FOUND IN LOCAL STORAGE');
     }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
 
     return this.http.post<any>(
       `${this.submissionUrl}/add`,

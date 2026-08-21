@@ -194,13 +194,6 @@ submitCode(): void {
     return;
   }
 
-  const token = localStorage.getItem('token');
-
-  if (!token) {
-    this.output = '❌ Please login first.';
-    return;
-  }
-
   const data = {
     questionId: this.questionId,
     code: this.code,
@@ -212,13 +205,13 @@ submitCode(): void {
     totalTests: this.testResults.length
   };
 
-  console.log('SUBMISSION DATA:', data);
+  console.log('SUBMIT DATA:', data);
 
   this.questionService.submitCode(data).subscribe({
 
     next: (res: any) => {
 
-      console.log('SUBMISSION RESPONSE:', res);
+      console.log('SUBMISSION SUCCESS:', res);
 
       this.output = '🎉 Solution Submitted Successfully!';
 
@@ -229,8 +222,8 @@ submitCode(): void {
       console.error('SUBMISSION ERROR:', err);
 
       this.output =
-        err.error?.error ||
         err.error?.message ||
+        err.error?.error ||
         '❌ Submission failed';
 
     }

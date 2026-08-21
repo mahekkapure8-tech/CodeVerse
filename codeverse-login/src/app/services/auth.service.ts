@@ -7,15 +7,22 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:5000/api/auth';
+  private apiUrl =
+    'https://codeverse-api-g7b5.onrender.com/api/auth';
 
   constructor(private http: HttpClient) {}
 
   login(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, data);
+    return this.http.post<any>(
+      `${this.apiUrl}/login`,
+      data
+    );
   }
 
   register(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, data);
+    return this.http.post<any>(
+      `${this.apiUrl}/register`,
+      data
+    );
   }
 }

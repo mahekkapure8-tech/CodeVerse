@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { Router } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -17,46 +17,65 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Login {
 
-  email = "";
-  password = "";
+  email = '';
+  password = '';
 
   showPassword = false;
+
   constructor(
-  private authService: AuthService,
-  private router: Router
-) {}
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  login() {
+  login(): void {
 
-    if (this.email === "" || this.password === "") {
-      alert("Please fill all fields.");
+    if (!this.email || !this.password) {
+      alert('Please fill all fields.');
       return;
     }
-const loginData = {
-    email: this.email,
-    password: this.password
-  };
 
-  this.authService.login(loginData).subscribe({
+    const loginData = {
+      email: this.email,
+      password: this.password
+    };
 
-    next: (res:any) => {
-        console.log("LOGIN RESPONSE:", res);
+    this.authService.login(loginData).subscribe({
 
-      localStorage.setItem("token", res.token);
+      next: (res: any) => {
 
-      alert(res.message);
+        console.log('LOGIN RESPONSE:', res);
+        console.log('LOGIN TOKEN:', res.token);
 
-      this.router.navigate(["/home"]);
+        if (!res.token) {
+          alert('Login successful but token was not received.');
+          return;
+        }
 
-    },
+        localStorage.setItem('token', res.token);
 
-    error: (err:any) => {
+        console.log(
+          'TOKEN SAVED:',
+          localStorage.getItem('token')
+        );
 
-      alert(err.error.message);
+        alert(res.message);
 
-    }
+        this.router.navigate(['/home']);
 
-  });
+      },
 
-}
+      error: (err: any) => {
+
+        console.error('LOGIN ERROR:', err);
+
+        alert(
+          err.error?.message ||
+          'Login failed'
+        );
+
+      }
+
+    });
+
+  }
 }

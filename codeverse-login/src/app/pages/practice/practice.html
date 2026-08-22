@@ -1,6 +1,6 @@
 <h1>Practice Problems</h1>
 
-
+<!-- SEARCH + FILTER -->
 <div class="search-section">
 
   <input
@@ -10,133 +10,82 @@
     (ngModelChange)="filterQuestions()"
   />
 
-
   <select
     [(ngModel)]="selectedDifficulty"
     (ngModelChange)="filterQuestions()"
   >
-
-    <option value="">
-      All Difficulties
-    </option>
-
-    <option value="Easy">
-      Easy
-    </option>
-
-    <option value="Medium">
-      Medium
-    </option>
-
-    <option value="Hard">
-      Hard
-    </option>
-
+    <option value="">All Difficulties</option>
+    <option value="Easy">Easy</option>
+    <option value="Medium">Medium</option>
+    <option value="Hard">Hard</option>
   </select>
 
 </div>
 
-
 <!-- LOADING -->
-
-<div *ngIf="loading">
-
-  <p>Loading questions...</p>
-
+<div *ngIf="loading" class="loading">
+  <h2>Loading questions...</h2>
 </div>
 
+<!-- CONTENT -->
+<ng-container *ngIf="!loading">
 
-<!-- QUESTION COUNT -->
+  <p>
+    Questions loaded: {{ filteredQuestions.length }}
+  </p>
 
-<p *ngIf="!loading">
+  <!-- NO QUESTIONS -->
+  <div *ngIf="filteredQuestions.length === 0">
+    <h2>No questions found</h2>
+  </div>
 
-  Questions loaded:
-  {{ filteredQuestions.length }}
-
-</p>
-
-
-<!-- NO QUESTIONS -->
-
-<div
-  *ngIf="
-    !loading &&
-    filteredQuestions.length === 0
-  "
->
-
-  <h2>
-    No questions found
-  </h2>
-
-</div>
-
-
-<!-- QUESTIONS -->
-
-<div
-  class="question-list"
-  *ngIf="
-    filteredQuestions.length > 0
-  "
->
-
+  <!-- QUESTIONS -->
   <div
-    class="question-card"
-    *ngFor="
-      let question of filteredQuestions;
-      let i = index
-    "
+    class="question-list"
+    *ngIf="filteredQuestions.length > 0"
   >
 
-    <div class="question-header">
+    <div
+      class="question-card"
+      *ngFor="let question of filteredQuestions; trackBy: trackByQuestionId"
+    >
 
-      <h2>
-        {{ question.title }}
-      </h2>
+      <div class="question-header">
 
+        <h2>
+          {{ question.title }}
+        </h2>
 
-      <span
-        class="difficulty"
-        [ngClass]="
-          question.difficulty?.toLowerCase()
-        "
-      >
+        <span
+          class="difficulty"
+          [ngClass]="question.difficulty?.toLowerCase()"
+        >
+          {{ question.difficulty }}
+        </span>
 
-        {{ question.difficulty }}
+      </div>
 
-      </span>
+      <p class="description">
+        {{ question.description }}
+      </p>
 
-    </div>
+      <div class="question-footer">
 
+        <span class="language">
+          💻 {{ question.language }}
+        </span>
 
-    <p class="description">
+        <button
+          type="button"
+          (click)="solveQuestionById(question._id)"
+        >
+          Solve →
+        </button>
 
-      {{ question.description }}
-
-    </p>
-
-
-    <div class="question-footer">
-
-      <span class="language">
-
-        💻 {{ question.language }}
-
-      </span>
-
-
-      <button
-        type="button"
-        (click)="solveQuestion(i)"
-      >
-
-        Solve →
-
-      </button>
+      </div>
 
     </div>
 
   </div>
 
-</div>
+</ng-container>

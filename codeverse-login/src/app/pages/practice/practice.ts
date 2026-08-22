@@ -67,25 +67,13 @@ export class Practice implements OnInit {
 
         next: (res: any) => {
 
-          console.log(
-            'API RESPONSE:',
-            res
-          );
-
+          console.log('API RESPONSE:', res);
 
           const data = Array.isArray(res)
             ? res
             : res.questions || [];
 
-
-          console.log(
-            'API LENGTH:',
-            data.length
-          );
-
-
-          // IMPORTANT:
-          // Angular UI update ke andar data set kar rahe hain
+          console.log('API LENGTH:', data.length);
 
           this.ngZone.run(() => {
 
@@ -96,7 +84,6 @@ export class Practice implements OnInit {
             this.filteredQuestions = [...data];
 
             this.loading = false;
-
 
             console.log(
               'FINAL QUESTIONS:',
@@ -120,7 +107,6 @@ export class Practice implements OnInit {
             err
           );
 
-
           this.ngZone.run(() => {
 
             this.questions = [];
@@ -141,7 +127,7 @@ export class Practice implements OnInit {
 
 
   // =====================================
-  // FILTER QUESTIONS
+  // SEARCH + DIFFICULTY FILTER
   // =====================================
 
   filterQuestions(): void {
@@ -189,11 +175,19 @@ export class Practice implements OnInit {
         }
       );
 
+  }
 
-    console.log(
-      'FILTERED QUESTIONS:',
-      this.filteredQuestions
-    );
+
+  // =====================================
+  // TRACK BY QUESTION ID
+  // =====================================
+
+  trackByQuestionId(
+    index: number,
+    question: any
+  ): string {
+
+    return question?._id || index.toString();
 
   }
 
@@ -207,17 +201,7 @@ export class Practice implements OnInit {
     const question =
       this.filteredQuestions[index];
 
-
-    console.log(
-      'SELECTED QUESTION:',
-      question
-    );
-
-
-    if (
-      !question ||
-      !question._id
-    ) {
+    if (!question || !question._id) {
 
       console.error(
         'QUESTION ID NOT FOUND:',
@@ -228,10 +212,38 @@ export class Practice implements OnInit {
 
     }
 
-
     this.router.navigate([
       '/question',
       question._id
+    ]);
+
+  }
+
+
+  // =====================================
+  // SOLVE QUESTION BY ID
+  // =====================================
+
+  solveQuestionById(id: string): void {
+
+    if (!id) {
+
+      console.error(
+        'QUESTION ID NOT FOUND'
+      );
+
+      return;
+
+    }
+
+    console.log(
+      'OPENING QUESTION:',
+      id
+    );
+
+    this.router.navigate([
+      '/question',
+      id
     ]);
 
   }

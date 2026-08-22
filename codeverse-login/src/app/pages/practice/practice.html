@@ -1,81 +1,142 @@
 <h1>Practice Problems</h1>
 
+
 <div class="search-section">
 
   <input
     type="text"
     placeholder="🔍 Search Question..."
     [(ngModel)]="searchText"
-    (input)="filterQuestions()"
+    (ngModelChange)="filterQuestions()"
   />
+
 
   <select
     [(ngModel)]="selectedDifficulty"
-    (change)="filterQuestions()"
+    (ngModelChange)="filterQuestions()"
   >
-    <option value="">All Difficulties</option>
-    <option value="Easy">Easy</option>
-    <option value="Medium">Medium</option>
-    <option value="Hard">Hard</option>
+
+    <option value="">
+      All Difficulties
+    </option>
+
+    <option value="Easy">
+      Easy
+    </option>
+
+    <option value="Medium">
+      Medium
+    </option>
+
+    <option value="Hard">
+      Hard
+    </option>
+
   </select>
 
 </div>
 
-<p>
-  Questions loaded: {{ allQuestions.length }}
+
+<!-- LOADING -->
+
+<div *ngIf="loading">
+
+  <p>Loading questions...</p>
+
+</div>
+
+
+<!-- QUESTION COUNT -->
+
+<p *ngIf="!loading">
+
+  Questions loaded:
+  {{ filteredQuestions.length }}
+
 </p>
 
-<div class="question-list">
+
+<!-- NO QUESTIONS -->
+
+<div
+  *ngIf="
+    !loading &&
+    filteredQuestions.length === 0
+  "
+>
+
+  <h2>
+    No questions found
+  </h2>
+
+</div>
+
+
+<!-- QUESTIONS -->
+
+<div
+  class="question-list"
+  *ngIf="
+    filteredQuestions.length > 0
+  "
+>
 
   <div
     class="question-card"
-    *ngFor="let question of filteredQuestions; let i = index"
+    *ngFor="
+      let question of filteredQuestions;
+      let i = index
+    "
   >
 
     <div class="question-header">
 
-      <h2>{{ question.title }}</h2>
+      <h2>
+        {{ question.title }}
+      </h2>
+
 
       <span
         class="difficulty"
-        [ngClass]="question.difficulty?.toLowerCase()"
+        [ngClass]="
+          question.difficulty?.toLowerCase()
+        "
       >
+
         {{ question.difficulty }}
+
       </span>
 
     </div>
 
+
     <p class="description">
+
       {{ question.description }}
+
     </p>
+
 
     <div class="question-footer">
 
       <span class="language">
-        💻 {{ question.language || 'JavaScript' }}
+
+        💻 {{ question.language }}
+
       </span>
+
 
       <button
         type="button"
         (click)="solveQuestion(i)"
       >
+
         Solve →
+
       </button>
 
     </div>
 
   </div>
 
-</div>
-
-<div
-  *ngIf="filteredQuestions.length === 0 && allQuestions.length > 0"
->
-  <h2>No questions match your search/filter.</h2>
-</div>
-
-<div
-  *ngIf="allQuestions.length === 0"
->
-  <h2>No questions found</h2>
 </div>
